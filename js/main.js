@@ -253,14 +253,70 @@
     });
   }
 
-  /* ---------- movement clips: pause others when one plays ---------- */
+  /* ---------- welcome music ---------- */
+  var music = document.getElementById("music");
+  var musicAudio = document.getElementById("musicAudio");
+  var musicToggle = document.getElementById("musicToggle");
+  var musicVolume = document.getElementById("musicVolume");
+  var musicInterrupted = false;
+
+  if (music && musicAudio) {
+    try {
+      var savedVol = localStorage.getItem("kasali_music_vol");
+      if (savedVol !== null) musicVolume.value = savedVol;
+    } catch (err) { /* storage unavailable */ }
+    musicAudio.volume = musicVolume.value / 100;
+
+    var syncMusicUi = function () {
+      var playing = !musicAudio.paused;
+      music.classList.toggle("is-playing", playing);
+      musicToggle.setAttribute("aria-pressed", String(playing));
+      musicToggle.setAttribute("aria-label", playing ? "Pause welcome music" : "Play welcome music");
+    };
+
+    musicToggle.addEventListener("click", function () {
+      music.classList.add("is-touched");
+      if (musicAudio.paused) {
+        musicAudio.play().catch(function () {});
+      } else {
+        musicInterrupted = false;
+        musicAudio.pause();
+      }
+    });
+
+    musicAudio.addEventListener("play", syncMusicUi);
+    musicAudio.addEventListener("pause", syncMusicUi);
+
+    musicVolume.addEventListener("input", function () {
+      musicAudio.volume = musicVolume.value / 100;
+      try { localStorage.setItem("kasali_music_vol", musicVolume.value); } catch (err) {}
+    });
+
+    /* hide the invite hint after the visitor scrolls a while, even if untouched */
+    setTimeout(function () { music.classList.add("is-touched"); }, 12000);
+  }
+
+  /* ---------- movement clips: pause others (and the music) when one plays ---------- */
   var clips = Array.prototype.slice.call(document.querySelectorAll(".clip video"));
   clips.forEach(function (video) {
     video.addEventListener("play", function () {
       clips.forEach(function (other) {
         if (other !== video) other.pause();
       });
+      if (musicAudio && !musicAudio.paused) {
+        musicInterrupted = true;
+        musicAudio.pause();
+      }
     });
+    var resumeMusic = function () {
+      var anyPlaying = clips.some(function (c) { return !c.paused; });
+      if (musicInterrupted && musicAudio && !anyPlaying) {
+        musicInterrupted = false;
+        musicAudio.play().catch(function () {});
+      }
+    };
+    video.addEventListener("pause", resumeMusic);
+    video.addEventListener("ended", resumeMusic);
   });
 
   /* ---------- volunteer form (front-end only) ---------- */
