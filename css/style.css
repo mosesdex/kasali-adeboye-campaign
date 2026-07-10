@@ -116,6 +116,7 @@ a { color: var(--navy-700); }
   transition: transform 200ms var(--ease), box-shadow 200ms var(--ease), background-color 200ms, color 200ms;
   min-height: 44px;
 }
+.btn, .nav__links a, .nav__burger, .footer__social { touch-action: manipulation; }
 .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
 .btn:focus-visible { outline: 3px solid var(--gold-400); outline-offset: 3px; }
 .btn:active { transform: translateY(0) scale(0.98); }
@@ -252,6 +253,21 @@ a { color: var(--navy-700); }
 .nav__burger.is-open span:nth-child(2) { opacity: 0; }
 .nav__burger.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
+/* scrim behind the mobile menu */
+.nav__scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 9, 22, 0.6);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 250ms;
+  z-index: 99;
+}
+body.menu-open .nav__scrim { opacity: 1; pointer-events: auto; }
+body.menu-open { overflow: hidden; }
+
 @media (max-width: 860px) {
   .nav__burger { display: flex; }
   .nav__name small { display: none; }
@@ -368,6 +384,17 @@ a { color: var(--navy-700); }
 @media (max-width: 700px) {
   .hero__video--desktop { display: none; }
   .hero__video--mobile { display: block; }
+
+  .hero__content {
+    padding-bottom: calc(clamp(4.5rem, 10vh, 6rem) + env(safe-area-inset-bottom, 0px));
+  }
+  .hero__content .eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+  }
+  .hero__content .eyebrow::before { display: none; }
+  .hero__actions { flex-direction: column; }
+  .hero__actions .btn { width: 100%; text-align: center; }
 }
 
 /* ==========================================================================
@@ -647,6 +674,10 @@ a { color: var(--navy-700); }
 .movement__follow-text { flex: 1 1 260px; display: flex; flex-direction: column; gap: 0.15rem; }
 .movement__follow-text strong { font-family: var(--font-display); font-size: 1.15rem; }
 .movement__follow-text span { color: rgba(255, 255, 255, 0.72); font-size: 0.92rem; }
+
+@media (max-width: 700px) {
+  .movement__follow .btn { width: 100%; text-align: center; }
+}
 
 /* ==========================================================================
    GALLERY

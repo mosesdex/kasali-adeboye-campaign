@@ -14,11 +14,17 @@
   var burger = document.getElementById("navBurger");
   var links = document.getElementById("navLinks");
 
+  var scrim = document.createElement("div");
+  scrim.className = "nav__scrim";
+  scrim.setAttribute("aria-hidden", "true");
+  document.body.appendChild(scrim);
+
   function closeMenu() {
     links.classList.remove("is-open");
     burger.classList.remove("is-open");
     burger.setAttribute("aria-expanded", "false");
     burger.setAttribute("aria-label", "Open menu");
+    document.body.classList.remove("menu-open");
   }
 
   burger.addEventListener("click", function () {
@@ -26,7 +32,10 @@
     burger.classList.toggle("is-open", open);
     burger.setAttribute("aria-expanded", String(open));
     burger.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    document.body.classList.toggle("menu-open", open);
   });
+
+  scrim.addEventListener("click", closeMenu);
 
   links.addEventListener("click", function (e) {
     if (e.target.tagName === "A") closeMenu();

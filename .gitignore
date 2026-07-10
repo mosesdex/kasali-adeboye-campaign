@@ -5,3 +5,4 @@
 # raw source media — only the web-optimised copies in assets/*/web/ are published
 assets/videos/*.mp4
 assets/images/*.jpeg
+test-mobile.html
