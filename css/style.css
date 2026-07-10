@@ -617,10 +617,14 @@ a { color: var(--navy-700); }
 }
 
 @media (min-width: 861px) {
-  .clip--tall { grid-column: span 2; }
-  .clip--wide { grid-column: span 4; }
-  .movement__grid { grid-template-columns: repeat(6, 1fr); align-items: start; }
-  .clip--tall video { aspect-ratio: 9 / 16; object-fit: cover; }
+  .movement__grid { grid-template-columns: repeat(6, 1fr); }
+  /* row 1: the two wide rally clips, equal size */
+  .clip--wide { grid-column: span 3; }
+  .clip--wide video { aspect-ratio: 16 / 9; object-fit: cover; width: 100%; }
+  /* row 2: the two vertical clips, centered like reels */
+  .clip--tall:nth-of-type(3) { grid-column: 2 / 4; }
+  .clip--tall:nth-of-type(4) { grid-column: 4 / 6; }
+  .clip--tall video { aspect-ratio: 9 / 16; object-fit: cover; width: 100%; }
 }
 
 @media (max-width: 860px) {
